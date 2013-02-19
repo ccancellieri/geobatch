@@ -23,8 +23,17 @@ package it.geosolutions.geobatch.geoserver;
 
 import java.util.List;
 
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+
+@Configuration(value="GeoServerActionConfiguration")
+@Scope("prototype")
 public class GeoServerActionConfiguration extends GeoServerActionConfig implements Cloneable{
 
+    public GeoServerActionConfiguration() {
+        super();
+    }
+	
     public GeoServerActionConfiguration(String id, String name, String description) {
         super(id, name, description);
     }

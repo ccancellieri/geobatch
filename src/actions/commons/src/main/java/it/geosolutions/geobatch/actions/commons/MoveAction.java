@@ -37,6 +37,8 @@ import java.util.Queue;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * Copy
@@ -44,6 +46,8 @@ import org.slf4j.LoggerFactory;
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
+@Service("MoveGeneratorService")
+@Scope("prototype")
 public class MoveAction extends BaseAction<EventObject> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(MoveAction.class);

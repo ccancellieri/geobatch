@@ -22,15 +22,10 @@
 
 package it.geosolutions.geobatch.geotiff.retile;
 
-import it.geosolutions.geobatch.annotationProcessor.ManageAlias;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import org.geotools.utils.CoverageToolsConstants;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@ManageAlias
-@XStreamAlias("GeotiffRetilerConfiguration")
 public class GeotiffRetilerConfiguration extends ActionConfiguration {
 
 

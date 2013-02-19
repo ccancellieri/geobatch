@@ -25,13 +25,24 @@ import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import java.io.File;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
+
 /**
  * 
  * @author Carlo Cancellieri - carlo.cancellieri@geo-solutions.it
  * 
  */
+@Configuration("MoveConfiguration")
+@Scope("prototype")
 public class MoveConfiguration extends ActionConfiguration {
 
+	public MoveConfiguration() {
+        super(null, null, null);
+    }
+	
     public MoveConfiguration(String id, String name, String description) {
         super(id, name, description);
     }

@@ -22,17 +22,16 @@
 
 package it.geosolutions.geobatch.geotiff.overview;
 
-import it.geosolutions.geobatch.annotationProcessor.ManageAlias;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 
 import javax.media.jai.Interpolation;
 
 import org.geotools.utils.CoverageToolsConstants;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@ManageAlias
-@XStreamAlias("GeotiffOverviewsEmbedderConfiguration")
+@Configuration("GeotiffOverviewsEmbedderConfiguration")
+@Scope("prototype")
 public class GeotiffOverviewsEmbedderConfiguration extends ActionConfiguration {
 
     

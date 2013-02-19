@@ -8,9 +8,11 @@
            http://www.springframework.org/schema/context/spring-context-3.0.xsd" default-init-method="init" default-destroy-method="dispose">
                
     <context:annotation-config />
-    <bean id="geoserverRegistrar" class="it.geosolutions.geobatch.geoserver.GeoServerAliasRegistrar" lazy-init="false">
-        <constructor-arg ref="aliasRegistry" />
-    </bean>
+    <context:component-scan base-package="it.geosolutions.geobatch"/>
+    
+<!--     <bean id="geoserverRegistrar" class="it.geosolutions.geobatch.geoserver.GeoServerAliasRegistrar" lazy-init="false"> -->
+<!--         <constructor-arg ref="aliasRegistry" /> -->
+<!--     </bean> -->
 
 	 <bean id="geoserverReloadRegistrar" class="it.geosolutions.geobatch.geoserver.reload.GeoServerReloadAliasRegistrar" lazy-init="false">
         <constructor-arg ref="aliasRegistry" />

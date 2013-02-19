@@ -28,6 +28,7 @@ import it.geosolutions.geobatch.settings.GBSettingsCatalog;
 
 import java.util.List;
 
+import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;

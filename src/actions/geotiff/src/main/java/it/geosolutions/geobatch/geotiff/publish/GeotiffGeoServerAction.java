@@ -22,7 +22,6 @@
 package it.geosolutions.geobatch.geotiff.publish;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.annotationProcessor.ActionService;
 import it.geosolutions.geobatch.annotationProcessor.CanCreateAction;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
@@ -56,7 +55,8 @@ import org.slf4j.LoggerFactory;
  * @version $ GeoTIFFOverviewsEmbedder.java $ Revision: 0.2 $ 25/Apr/11 11:00:00
  * @version $ GeoTIFFOverviewsEmbedder.java $ Revision: 0.2 $ 09/May/12 12:00:00
  */
-@ActionService(serviceId = "GeotiffGeoServerService")
+//@Action(id="GeotiffGeoServerService")
+//@Configure(with = GeoServerActionConfiguration.class, alias = "GeotiffGeoServerAction")
 public class GeotiffGeoServerAction extends BaseAction<FileSystemEvent> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GeotiffGeoServerAction.class);

@@ -53,10 +53,10 @@ public abstract class ActionConfiguration extends BaseDescriptableConfiguration 
      */
     private File overrideConfigDir;
 
-    // public ActionConfiguration() {
-    // super();
-    // }
-
+    public ActionConfiguration() {
+        super(null,null,null);
+    }
+    
     public ActionConfiguration(String id, String name, String description) {
         super(id, name, description);
     }

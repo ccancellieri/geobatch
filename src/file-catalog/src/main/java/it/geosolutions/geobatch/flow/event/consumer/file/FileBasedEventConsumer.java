@@ -23,11 +23,7 @@ package it.geosolutions.geobatch.flow.event.consumer.file;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
 import it.geosolutions.geobatch.annotationProcessor.GenericActionService;
-import it.geosolutions.geobatch.annotationProcessor.ActionAnnotationScanner;
-import it.geosolutions.geobatch.annotationProcessor.CanCreateAction;
 import it.geosolutions.geobatch.catalog.Catalog;
-import it.geosolutions.geobatch.catalog.Identifiable;
-import it.geosolutions.geobatch.catalog.impl.BaseConfiguration;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.configuration.event.consumer.file.FileBasedEventConsumerConfiguration;
 import it.geosolutions.geobatch.configuration.event.listener.ProgressListenerConfiguration;
@@ -37,7 +33,6 @@ import it.geosolutions.geobatch.flow.event.ProgressListener;
 import it.geosolutions.geobatch.flow.event.ProgressListenerForwarder;
 import it.geosolutions.geobatch.flow.event.action.Action;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
-import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.flow.event.action.BaseAction;
 import it.geosolutions.geobatch.flow.event.consumer.BaseEventConsumer;
 import it.geosolutions.geobatch.flow.event.consumer.EventConsumerStatus;
@@ -47,8 +42,6 @@ import it.geosolutions.tools.io.file.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,6 +57,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author Simone Giannecchini, GeoSolutions S.A.S.
@@ -74,6 +70,9 @@ import org.slf4j.LoggerFactory;
 public class FileBasedEventConsumer 
     extends BaseEventConsumer<FileSystemEvent, FileBasedEventConsumerConfiguration> {
 
+	@Autowired
+	ApplicationContext context;
+	
     /**
      * Default logger
      */
@@ -108,7 +107,6 @@ public class FileBasedEventConsumer
      * do not remove runtimeDir when consumer is disposed
      */
     private boolean keepTempDir = false;
-
 
     /**
      * PUBLIC CONSTRUCTORS: Initialize the consumer using the passed
@@ -219,23 +217,30 @@ public class FileBasedEventConsumer
 //                // TODO
             
             // Geobatch 1.4.x way: runtime creation of the service starting by the annotations of an action class
-            final  GenericActionService service = catalog.getResource(actionServiceID, GenericActionService.class);
-            if (service != null) {
-                Action<? extends EventObject> action = null;
-                Class actionType = service.getType();
-
-                if (service.canCreateAction(actionConfig)) {
-                    action = service.createAction(actionType, actionConfig);
-                    if (action == null) { // TODO this control may be useless due to createAction never returns null...
-                        throw new IllegalArgumentException(
-                                "Action could not be instantiated for config " + actionConfig);
-                    }
-                } else {
-                    throw new IllegalArgumentException(
-                            "Cannot create the action using the service " + actionServiceID
-                                    + " check the configuration.");
-                }
-                // end of the patch
+//            final  GenericActionService service = catalog.getResource(actionServiceID, GenericActionService.class);
+//            if (service != null) {
+//                Action<? extends EventObject> action = null;
+//                Class actionType = service.getType();
+//
+//                if (service.canCreateAction(actionConfig)) {
+//                    action = service.createAction(actionType, actionConfig);
+//                    if (action == null) { // TODO this control may be useless due to createAction never returns null...
+//                        throw new IllegalArgumentException(
+//                                "Action could not be instantiated for config " + actionConfig);
+//                    }
+//                } else {
+//                    throw new IllegalArgumentException(
+//                            "Cannot create the action using the service " + actionServiceID
+//                                    + " check the configuration.");
+//                }
+//                // end of the patch
+            
+            // loads the prototype from the context and build it using configuration
+            BaseAction action=(BaseAction)context.getBean(actionServiceID, actionConfig);
+            if (action == null) { // TODO this control may be useless due to createAction never returns null...
+              throw new IllegalArgumentException(
+                      "Action could not be instantiated for config " + actionConfig);
+          }
                 
                 // attach listeners to actions
                 for (ProgressListenerConfiguration plConfig : actionConfig
@@ -257,10 +262,10 @@ public class FileBasedEventConsumer
                 }
 
                 loadedActions.add((BaseAction<FileSystemEvent>) action);
-            } else {
-                throw new IllegalArgumentException("ActionService not found '" + actionServiceID
-                        + "' for ActionConfig '" + actionConfig.getName() + "'");
-            }
+//            } else {
+//                throw new IllegalArgumentException("ActionService not found '" + actionServiceID
+//                        + "' for ActionConfig '" + actionConfig.getName() + "'");
+//            }
         }
         super.addActions(loadedActions);
 

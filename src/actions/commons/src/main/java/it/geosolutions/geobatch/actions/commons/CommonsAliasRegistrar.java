@@ -42,7 +42,7 @@ public class CommonsAliasRegistrar extends AliasRegistrar {
         registry.putAlias("CopyConfiguration", CopyConfiguration.class);
 
         // move
-        registry.putAlias("MoveConfiguration", MoveConfiguration.class);
+//        registry.putAlias("MoveConfiguration", MoveConfiguration.class);
 
         // extract
         registry.putAlias("ExtractConfiguration", ExtractConfiguration.class);

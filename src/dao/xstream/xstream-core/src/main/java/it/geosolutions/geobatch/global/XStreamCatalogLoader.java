@@ -22,16 +22,14 @@
 
 package it.geosolutions.geobatch.global;
 
-import it.geosolutions.geobatch.annotationProcessor.GenericActionService;
-import it.geosolutions.geobatch.annotationProcessor.ActionAnnotationScanner;
 import it.geosolutions.geobatch.catalog.Catalog;
-import it.geosolutions.geobatch.catalog.Service;
 import it.geosolutions.geobatch.catalog.dao.DAO;
 import it.geosolutions.geobatch.catalog.dao.file.xstream.XStreamCatalogDAO;
 import it.geosolutions.geobatch.catalog.dao.file.xstream.XStreamFlowConfigurationDAO;
 import it.geosolutions.geobatch.catalog.file.FileBaseCatalog;
 import it.geosolutions.geobatch.catalog.file.FileBasedCatalogImpl;
 import it.geosolutions.geobatch.configuration.flow.file.FileBasedCatalogConfiguration;
+import it.geosolutions.geobatch.flow.event.action.ActionService;
 import it.geosolutions.geobatch.flow.file.FileBasedFlowManager;
 import it.geosolutions.geobatch.registry.AliasRegistrar;
 import it.geosolutions.geobatch.settings.GBSettingsCatalog;
@@ -39,7 +37,6 @@ import it.geosolutions.geobatch.xstream.Alias;
 
 import java.io.File;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -51,7 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * The application configuration facade.
@@ -64,15 +61,6 @@ public class XStreamCatalogLoader extends CatalogHolder {
     private static final Logger LOGGER = LoggerFactory.getLogger(XStreamCatalogLoader.class);
 
     private final Alias alias;
-
-    private ActionAnnotationScanner actionAnnotationScanner;
-    
-    /**
-     * @param actionAnnotationScanner the actionAnnotationScanner to set
-     */
-    public void setActionAnnotationScanner(ActionAnnotationScanner actionAnnotationScanner) {
-        this.actionAnnotationScanner = actionAnnotationScanner;
-    }
 
     // enforcing singleton
     private XStreamCatalogLoader(Catalog catalog, Alias alias) {
@@ -91,7 +79,6 @@ public class XStreamCatalogLoader extends CatalogHolder {
     public void init() throws Exception {
 
         File dataDir = ((FileBaseCatalog) CatalogHolder.getCatalog()).getBaseDirectory();
-
         
         // //
         //
@@ -99,7 +86,14 @@ public class XStreamCatalogLoader extends CatalogHolder {
         //
         // //
         context.getBeansOfType(AliasRegistrar.class);
-
+// That's the GB 1.4.x way... 
+final Map<String,Object> beans=context.getBeansWithAnnotation(Configuration.class);
+Iterator<Entry<String, Object>> it = beans.entrySet().iterator();
+while (it.hasNext()){
+	Entry<String, Object> o=it.next();
+	alias.getAliasRegistry().putAlias(o.getKey(),o.getValue().getClass());
+}
+        
         // //
         //
         // Now get the catalog we have been injected
@@ -112,30 +106,26 @@ public class XStreamCatalogLoader extends CatalogHolder {
         catalog.setDAO(new XStreamCatalogDAO(dataDir.getAbsolutePath(), alias));
         catalog.load();
 
-        // //
-        //
-        // Force loading all services
-        //
-        // //
-        // That's the GB 1.3.x way to load services mantain uncomment because other service must be loaded (f.e. those relative to EventGenerator)
-        final Map<String, ? extends Service> services = context.getBeansOfType(Service.class);
-        for (Entry<String, ? extends Service> servicePair : services.entrySet()) {
-            final Service service = servicePair.getValue();
-            if (!service.isAvailable()) {
-                if (LOGGER.isInfoEnabled())
-                    LOGGER.info("Skipping service " + servicePair.getKey() + " (" +service.getClass()+ ")" );
-                continue;
-            }
-            if (LOGGER.isInfoEnabled())
-                LOGGER.info("Loading service " + servicePair.getKey() + " (" +service.getClass()+ ")");
-            catalog.add(servicePair.getValue());
-        }
-        // That's the GB 1.4.x way... just an experiment for now...
-        //  if (!service.isAvailable()) TODO this type of control? how replicate it?
-        List<GenericActionService> list = actionAnnotationScanner.getActionList();
-        for(GenericActionService el : list){
-            catalog.add(el);
-        }
+//        // //
+//        //
+//        // Force loading all services
+//        //
+//        // //
+//        // That's the GB 1.3.x way to load services mantain uncomment because other service must be loaded (f.e. those relative to EventGenerator)
+//        final Map<String, ? extends Service> services = context.getBeansOfType(Service.class);
+//        for (Entry<String, ? extends Service> servicePair : services.entrySet()) {
+//            final Service service = servicePair.getValue();
+//            if (!service.isAvailable()) {
+//                if (LOGGER.isInfoEnabled())
+//                    LOGGER.info("Skipping service " + servicePair.getKey() + " (" +service.getClass()+ ")" );
+//                continue;
+//            }
+//            if (LOGGER.isInfoEnabled())
+//                LOGGER.info("Loading service " + servicePair.getKey() + " (" +service.getClass()+ ")");
+//            catalog.add(servicePair.getValue());
+//        }
+//        
+
 
         loadFlows(dataDir, catalog);
 

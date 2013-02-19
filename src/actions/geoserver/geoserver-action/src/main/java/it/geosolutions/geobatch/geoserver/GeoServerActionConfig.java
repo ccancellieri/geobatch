@@ -52,6 +52,10 @@ public abstract class GeoServerActionConfig extends ActionConfiguration implemen
         this.geoserverURL = geoserverURL;
     }
 
+    public GeoServerActionConfig() {
+        super();
+    }
+    
     public GeoServerActionConfig(String id, String name, String description) {
         super(id, name, description);
     }

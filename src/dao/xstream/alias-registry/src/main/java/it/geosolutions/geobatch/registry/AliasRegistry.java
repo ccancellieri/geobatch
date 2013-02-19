@@ -33,14 +33,14 @@ import org.slf4j.LoggerFactory;
  * @author ETj <etj at geo-solutions.it>
  */
 public class AliasRegistry implements Iterable<Map.Entry<String, Class<?>>> {
-
+	
     private final static Logger LOGGER = LoggerFactory.getLogger(AliasRegistrar.class.getName());
 
     private Map<String, Class<?>> alias = new HashMap<String, Class<?>>();
     private Map<String, Class<?>> implicitCollections = new HashMap<String, Class<?>>();
-    private Map<String, Class<?>> processAnnotations = new HashMap<String, Class<?>>();
     
     public AliasRegistry() {
+    	
     }
 
     public int size() {
@@ -65,16 +65,6 @@ public class AliasRegistry implements Iterable<Map.Entry<String, Class<?>>> {
 
     public Iterable<Entry<String, Class<?>>> implicitCollectionIterator() {
         return implicitCollections.entrySet();
-    }
-    
-    public void putProcessAnnotations(String name, Class<?> clazz) {
-        if (LOGGER.isInfoEnabled())
-            LOGGER.info("Adding Class For Annotation Process " + name + " for class " + clazz.getSimpleName());
-        processAnnotations.put(name, clazz);
-    }
-
-    public Iterable<Entry<String, Class<?>>> processAnnotationsIterator() {
-        return processAnnotations.entrySet();
     }
 
 }

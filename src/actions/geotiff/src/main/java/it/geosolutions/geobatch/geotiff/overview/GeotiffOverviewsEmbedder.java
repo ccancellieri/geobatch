@@ -23,7 +23,6 @@
 package it.geosolutions.geobatch.geotiff.overview;
 
 import it.geosolutions.filesystemmonitor.monitor.FileSystemEvent;
-import it.geosolutions.geobatch.annotationProcessor.ActionService;
 import it.geosolutions.geobatch.annotationProcessor.CanCreateAction;
 import it.geosolutions.geobatch.configuration.event.action.ActionConfiguration;
 import it.geosolutions.geobatch.flow.event.action.ActionException;
@@ -47,6 +46,8 @@ import org.geotools.utils.progress.ProcessingEvent;
 import org.geotools.utils.progress.ProcessingEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 /**
  * Action to add overview to an input geotif image. NOTE: only one image is
@@ -58,7 +59,8 @@ import org.slf4j.LoggerFactory;
  * @version $GeoTIFFOverviewsEmbedder.java Revision: 0.1 $ 23/mar/07 11:42:25
  *          Revision: 0.2 $ 15/Feb/11 13:00:00
  */
-@ActionService(serviceId = "GeotiffOverviewsEmbedderService")
+@Service("GeotiffOverviewsEmbedderService")
+@Scope("prototype")
 public class GeotiffOverviewsEmbedder extends BaseAction<FileSystemEvent> {
 
 	private GeotiffOverviewsEmbedderConfiguration configuration;
